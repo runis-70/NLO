@@ -7,20 +7,24 @@ public class Controller : MonoBehaviour
     [SerializeField] private GameObject BlueRay;
     [SerializeField] private GameObject RedRay;
     [SerializeField] private float secondRay;
+    private void Start()
+    {
+        Physics2D.queriesStartInColliders = false;
+    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            StartCoroutine(OnBlueRayDown());
-            Ray ray = new Ray(transform.position, transform.forward);
-            RaycastHit2D hit;
-            Debug.DrawRay(transform.position, transform.forward * 100f);
-            if (Physics.Raycast(ray, out hit))
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down);
+            if (hit.collider != null)
             {
-                RaycastHit2D hit;
-                if (hit.collider != null)
+                if (hit.collider.tag == "Mine")
                 {
-                    print(hit.transform.gameObject.name);
+                    StartCoroutine(OnBlueRayDown());
+                }
+                else
+                {
+                    StartCoroutine(OnRedRayDown());
                 }
             }
         }
