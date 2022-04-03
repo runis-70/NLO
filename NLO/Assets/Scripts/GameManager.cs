@@ -4,21 +4,20 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private float speed;
-    private float positionMinX;
-    private Vector2 restartPosition;
-    void Start()
+    [SerializeField] private float endX;
+    private Vector2 startPos;
+    private void Start()
     {
-        restartPosition = transform.position;
-        positionMinX = sprite.bounds.size.x * 2 - restartPosition.x;
+        startPos = transform.position;
     }
-    void Update()
+    private void Update()
     {
-        transform.Translate(Vector3.down * speed * Time.deltaTime);
-        if (transform.position.x <= positionMinX)
+        transform.Translate(Vector2.left * speed * Time.deltaTime);
+        if (transform.position.x <= endX )
         {
-            transform.position = restartPosition;
+            transform.position = startPos;
         }
     }
+ 
 }

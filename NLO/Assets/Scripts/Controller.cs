@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,9 +7,15 @@ public class Controller : MonoBehaviour
 {
     [SerializeField] private GameObject BlueRay;
     [SerializeField] private GameObject RedRay;
+    [SerializeField] private GenerateObject generate;
     [SerializeField] private float secondRay;
+    [SerializeField] private int maxHP;
+    public static Action YouLose;
+    public static Action<float> Score;
+    private int HP;
     private void Start()
     {
+        HP = maxHP;
         Physics2D.queriesStartInColliders = false;
     }
     private void Update()
@@ -18,15 +25,44 @@ public class Controller : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down);
             if (hit.collider != null)
             {
-                if (hit.collider.tag == "Mine")
+                if (hit.collider.tag == "Enemy")
                 {
-                    StartCoroutine(OnBlueRayDown());
+                    Destroy(hit.collider.gameObject);
+                    StartCoroutine(OnRedRayDown());
+                    generate.countEnemy--;
+                    RecountHp(-1);
+                    Score.Invoke(100);
+
                 }
                 else
                 {
-                    StartCoroutine(OnRedRayDown());
+                    generate.countMine--;
+                    StartCoroutine(OnBlueRayDown());
+                    Score.Invoke(300);
+                    Destroy(hit.collider.gameObject);
                 }
             }
+            else
+            {
+                StartCoroutine(OnBlueRayDown());;
+            }
+        }
+    }
+    public void RecountHp(int deltahp)//Çהמנמגüו
+    {
+        if (deltahp < 0)
+        {
+            HP = HP + deltahp;
+        }
+        else if (HP > maxHP)
+        {
+            HP = maxHP + deltahp;
+            HP = maxHP;
+        }
+        if (HP <= 0)
+        {
+            GetComponent<PolygonCollider2D>().enabled = false;
+            YouLose.Invoke();
         }
     }
     private IEnumerator OnRedRayDown()
@@ -40,5 +76,13 @@ public class Controller : MonoBehaviour
         BlueRay.SetActive(true);
         yield return new WaitForSeconds(secondRay);
         BlueRay.SetActive(false);
+    }
+    public int GetHP()
+    {
+        return HP;
+    }
+    public int GetMaxHP()
+    {
+        return maxHP;
     }
 }
