@@ -11,14 +11,22 @@ public class AnimationController : MonoBehaviour
     private Controller controller;
     private bool isStart = true;
     [SerializeField] private GenerateObject generate;
+    public void OnEnable()
+    {
+        Controller.YouLose -= Death;
+    }
     private void Start()
     {
+        Controller.YouLose += Death; 
         controller = GetComponent<Controller>();
         animator = GetComponent<Animator>();
     }
+    public void End()
+    {
+        canvas.Lose();
+    }
     public void ToEndWay()
     {
-        animator.SetInteger("Anim", 1);
         controller.enabled = true;
         generate.enabled = true;
     }
@@ -29,6 +37,15 @@ public class AnimationController : MonoBehaviour
     public void StartScrollingBackground()
     {
         gameManager.enabled = true;
+    }
+    public void Death() 
+    {
+        controller.BlueRay.SetActive(false);
+        controller.RedRay.SetActive(false);
+        generate.enabled = false;
+        controller.enabled = false;
+        animator.SetTrigger("Death");
+
     }
     private void Update()
     {

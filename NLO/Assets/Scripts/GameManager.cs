@@ -5,8 +5,17 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private float speed;
+    [SerializeField] private float MaxSpeed;
+    [SerializeField] private float acceleration;
     [SerializeField] private float endX;
     private Vector2 startPos;
+    private void FixedUpdate()
+    {
+        if (speed < MaxSpeed)
+        {
+            speed += acceleration * Time.fixedDeltaTime;
+        }
+    }
     private void Start()
     {
         startPos = transform.position;

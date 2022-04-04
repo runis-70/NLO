@@ -31,5 +31,13 @@ public class DeathZone : MonoBehaviour
             }
             Destroy(collision.gameObject);
         }
+        if (collision.gameObject.tag == "Cow")
+        {
+            if (objects.countCow > 0)
+            {
+                objects.countCow--;
+            }
+            Destroy(collision.gameObject);
+        }
     }
 }

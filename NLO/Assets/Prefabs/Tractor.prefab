@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 16479856284158293}
   - component: {fileID: 5376353421012306681}
   - component: {fileID: 863500108}
-  - component: {fileID: 863500104}
+  - component: {fileID: 4849631420656630281}
   m_Layer: 0
   m_Name: Tractor
   m_TagString: Tractor
@@ -162,7 +162,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &863500104
+--- !u!114 &4849631420656630281
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -171,7 +171,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6976726423028631589}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c185e3f67e4bf146aa030b8ca47983e, type: 3}
+  m_Script: {fileID: 11500000, guid: e62f265a12e4f654cae3c3cd45b39fe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1.5
+  MaxSpeed: 5.5
+  accelaration: 0.004

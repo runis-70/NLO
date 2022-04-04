@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
-    [SerializeField] private GameObject BlueRay;
-    [SerializeField] private GameObject RedRay;
+    public GameObject BlueRay;
+    public GameObject RedRay;
     [SerializeField] private GenerateObject generate;
     [SerializeField] private float secondRay;
     [SerializeField] private int maxHP;
@@ -18,6 +18,10 @@ public class Controller : MonoBehaviour
     {
         HP = maxHP;
         Physics2D.queriesStartInColliders = false;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Destroy(collision.gameObject);
     }
     private void Update()
     {
@@ -33,11 +37,25 @@ public class Controller : MonoBehaviour
                     generate.countEnemy--;
                     RecountHp(-1);
                 }
-                else
+                if(hit.collider.tag == "Mine")
                 {
                     generate.countMine--;
                     StartCoroutine(OnBlueRayDown());
                     Score.Invoke(300);
+                    Destroy(hit.collider.gameObject);
+                }
+                if (hit.collider.tag == "Cow")
+                {
+                    generate.countCow--;
+                    StartCoroutine(OnBlueRayDown());
+                    Score.Invoke(100);
+                    Destroy(hit.collider.gameObject);
+                }
+                if (hit.collider.tag == "Tractor")
+                {
+                    generate.countTractor--; ;
+                    StartCoroutine(OnBlueRayDown());
+                    Score.Invoke(200);
                     Destroy(hit.collider.gameObject);
                 }
             }
@@ -60,7 +78,6 @@ public class Controller : MonoBehaviour
         }
         if (HP <= 0)
         {
-            GetComponent<PolygonCollider2D>().enabled = false;
             YouLose.Invoke();
         }
     }

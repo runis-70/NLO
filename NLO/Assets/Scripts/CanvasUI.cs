@@ -18,7 +18,6 @@ public class CanvasUI : MonoBehaviour
     private int maxHP;
     private void Start()
     {
-        Controller.YouLose += Lose;
         Controller.Score += UpdateText;
         maxHP = controller.GetMaxHP();
         LosePanel.SetActive(false);
@@ -39,7 +38,6 @@ public class CanvasUI : MonoBehaviour
     }
     private void OnDisable()
     {
-        Controller.YouLose -= Lose;
         Controller.Score -= UpdateText;
     }
     public void OnVisible()
