@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 863500104}
   m_Layer: 0
   m_Name: Tractor
-  m_TagString: Mine
+  m_TagString: Tractor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -174,4 +174,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c185e3f67e4bf146aa030b8ca47983e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 1.5

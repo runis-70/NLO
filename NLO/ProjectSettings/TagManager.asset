@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Mine
   - Enemy
+  - Tractor
   layers:
   - Default
   - TransparentFX

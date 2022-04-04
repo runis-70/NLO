@@ -13,6 +13,7 @@ public class CanvasUI : MonoBehaviour
     [SerializeField] private Text finalScoreText;
     [SerializeField] private Text TextNoInternet;
     [SerializeField] private Controller controller;
+    [SerializeField] private GenerateObject generateObject;
     private float Score;
     private int maxHP;
     private void Start()

@@ -17,6 +17,14 @@ public class DeathZone : MonoBehaviour
         }
         if (collision.gameObject.tag == "Mine")
         {
+            if (objects.countTractor > 0)
+            {
+                objects.countTractor--;
+            }
+            Destroy(collision.gameObject);
+        }
+        if (collision.gameObject.tag == "Tractor")
+        {
             if (objects.countMine > 0)
             {
                 objects.countMine--;

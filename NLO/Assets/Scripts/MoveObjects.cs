@@ -5,7 +5,7 @@ using UnityEngine;
 public class MoveObjects : MonoBehaviour
 {
     private Rigidbody2D rigidbody;
-    [SerializeField] private float speed;
+    public float speed;
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();

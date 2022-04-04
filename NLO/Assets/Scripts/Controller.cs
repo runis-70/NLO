@@ -10,6 +10,7 @@ public class Controller : MonoBehaviour
     [SerializeField] private GenerateObject generate;
     [SerializeField] private float secondRay;
     [SerializeField] private int maxHP;
+    [SerializeField] private KeyCode keyCode;
     public static Action YouLose;
     public static Action<float> Score;
     private int HP;
@@ -31,8 +32,6 @@ public class Controller : MonoBehaviour
                     StartCoroutine(OnRedRayDown());
                     generate.countEnemy--;
                     RecountHp(-1);
-                    Score.Invoke(100);
-
                 }
                 else
                 {

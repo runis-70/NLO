@@ -7,12 +7,10 @@ public class GenerateObject : MonoBehaviour
     public GameObject[] objects;
     [SerializeField] private int MaxCountEnemy;
     [SerializeField] private int MaxCountMine;
+    [SerializeField] private int MaxCountTractor;
     public int countEnemy;
     public int countMine;
-    private void Start()
-    {
-        
-    }
+    public int countTractor;
     public void OnEnable()
     {
         Instantiate(objects[Random.Range(0, objects.Length - 1)], transform.position, Quaternion.identity);
@@ -29,6 +27,14 @@ public class GenerateObject : MonoBehaviour
             {
                 Instantiate(objects[random], transform.position, Quaternion.identity);
                 countEnemy++;
+            }
+        }
+        else if (gameObject.tag == "Tractor")
+        {
+            if (countTractor < MaxCountTractor)
+            {
+                Instantiate(objects[random], transform.position, Quaternion.identity);
+                countTractor++;
             }
         }
         else if(gameObject.tag == "Mine")
