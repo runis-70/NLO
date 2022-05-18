@@ -47,13 +47,6 @@ public class AnimationController : MonoBehaviour
         animator.SetTrigger("Death");
 
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Mouse1))
-        {
-            canvas.Lose();
-        }
-    }
     private void OnMouseDown()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0) & isStart)

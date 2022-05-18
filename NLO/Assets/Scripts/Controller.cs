@@ -10,14 +10,12 @@ public class Controller : MonoBehaviour
     [SerializeField] private GenerateObject generate;
     [SerializeField] private float secondRay;
     [SerializeField] private int maxHP;
-    [SerializeField] private KeyCode keyCode;
     public static Action YouLose;
     public static Action<float> Score;
     private int HP;
     private void Start()
     {
         HP = maxHP;
-        Physics2D.queriesStartInColliders = false;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -30,6 +28,7 @@ public class Controller : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down);
             if (hit.collider != null)
             {
+                print(hit.collider.tag);
                 if (hit.collider.tag == "Enemy")
                 {
                     Destroy(hit.collider.gameObject);
@@ -37,7 +36,7 @@ public class Controller : MonoBehaviour
                     generate.countEnemy--;
                     RecountHp(-1);
                 }
-                if(hit.collider.tag == "Mine")
+                if (hit.collider.tag == "Mine")
                 {
                     generate.countMine--;
                     StartCoroutine(OnBlueRayDown());
@@ -60,8 +59,8 @@ public class Controller : MonoBehaviour
                 }
             }
             else
-            {
-                StartCoroutine(OnBlueRayDown());;
+            {            
+                StartCoroutine(OnBlueRayDown()); ;
             }
         }
     }
