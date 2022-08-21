@@ -22,6 +22,7 @@ public class Controller : MonoBehaviour
 
     // События
     public static Action<int> Score;
+    public static Action MaxHp;
 
     private RaycastHit2D hit;
     private void Start()
@@ -46,7 +47,6 @@ public class Controller : MonoBehaviour
                 if (hit.collider.tag == "Mine")
                 {
                     Destroy(hit.collider.gameObject);
-                    generate.countMine--;
                     AddScore(-600);
                     RecountHp(-1);
                     StartCoroutine(OnRedRayDown());
@@ -54,31 +54,31 @@ public class Controller : MonoBehaviour
                 if (hit.collider.tag == "Barn")
                 {
                     Destroy(hit.collider.gameObject);
-                    generate.countBarn--;
                     AddScore(800);
                     StartCoroutine(OnBlueRayDown());
                 }
                 if (hit.collider.tag == "Cow")
                 {
                     Destroy(hit.collider.gameObject);
-                    generate.countCow--;
                     AddScore(700);
                     StartCoroutine(OnBlueRayDown());
                 }
                 if (hit.collider.tag == "Tractor")
                 {
                     Destroy(hit.collider.gameObject);
-                    generate.countTractor--;
                     AddScore(900);
                     StartCoroutine(OnBlueRayDown());
                 }
                 if (hit.collider.tag == "Health")
                 {
+                    if(HP == maxHP)
+                        AddScore(1000);
+                    else
+                    {                       
+                        RecountHp(1);
+                        StartCoroutine(OnGreenRayDown());
+                    }
                     Destroy(hit.collider.gameObject);
-                    generate.countHealth++;
-                    RecountHp(1);
-                    AddScore(1000);
-                    StartCoroutine(OnGreenRayDown());
                 }
             }
             else
@@ -94,18 +94,23 @@ public class Controller : MonoBehaviour
     //}
     public void RecountHp(int deltahp)//Здоровье
     {
-        if (deltahp < 0)
+        if (HP > 0)
         {
             HP += deltahp;
         }
-        else if (HP > maxHP)
+        if (HP > maxHP)
         {
             HP = maxHP;
+        }
+        else if (HP != maxHP)
+        {
+            MaxHp.Invoke();
         }
         if (HP <= 0)
         {
             animator.SetTrigger("Death");
         }
+
     }
     public void Death()
     {

@@ -2329,23 +2329,12 @@ MonoBehaviour:
   - {fileID: 571232958, guid: a086865dd50ab5c4799c6c37c50df6cd, type: 3}
   - {fileID: 4849631420656630281, guid: 65eefd546a3d9b14dbe89b7cd8ab63a0, type: 3}
   - {fileID: 8088845575634214680, guid: 10bf1926f2e01234e970e1e58f084f1e, type: 3}
-  - {fileID: 5927464233955460247, guid: f36bd0eb8d282f846a9d14b647aa47f2, type: 3}
+  healthObject: {fileID: 5927464233955460247, guid: f36bd0eb8d282f846a9d14b647aa47f2, type: 3}
   minFrame: 2
-  maxFrame: 2.1
+  maxFrame: 3
   speedObjects: []
-  countObjects: 
-  numberObjects: 
-  deathZone: {fileID: 2132453632}
-  MaxCountBarn: 2
-  MaxCountMine: 2
-  MaxCountTractor: 1
-  MaxCountCow: 1
-  MaxCountHealth: 1
-  countBarn: 0
-  countMine: 0
-  countTractor: 0
-  countCow: 0
-  countHealth: 0
+  accelerationObjects: []
+  maxSpeedObjects: []
 --- !u!4 &1820911907
 Transform:
   m_ObjectHideFlags: 0
@@ -2860,9 +2849,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3ecb2b7a88360243a9a198bb530ba71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generateController: {fileID: 1820911906}
-  countObjects: 
-  numberObjects: 
 --- !u!61 &2132453633
 BoxCollider2D:
   m_ObjectHideFlags: 0

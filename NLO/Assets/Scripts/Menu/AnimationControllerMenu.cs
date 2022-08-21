@@ -11,17 +11,23 @@ public class AnimationControllerMenu : MonoBehaviour
 
     private void Start()
     {
+        CanvasMenu.WayStarted += WayStart;
         animator = GetComponent<Animator>();
+    }
+    private void OnDisable()
+    {
+        CanvasMenu.WayStarted -= WayStart;
     }
     public void StartScene()
     {
        SceneManager.LoadScene(nameScene);
     }
+    private void WayStart()
+    {
+        animator.SetInteger("Anim", 1);
+    }
     private void OnMouseDown()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            animator.SetInteger("Anim", 2);
-        }
+        animator.SetInteger("Anim", 1);
     }
 }

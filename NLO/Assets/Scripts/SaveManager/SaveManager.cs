@@ -20,6 +20,18 @@ namespace SaveManagerLibrary
             PlayerPrefs.SetFloat(key, value);
         }
         // Выгрузка данных
+        public static int LoadInt(string key, int defaultValue)
+        {
+            return PlayerPrefs.GetInt(key, defaultValue);
+        }
+        public static float LoadFloat(string key, float defaultValue)
+        {
+            return PlayerPrefs.GetFloat(key, defaultValue);
+        }
+        public static string LoadString(string key, string defaultValue)
+        {
+            return PlayerPrefs.GetString(key, defaultValue);
+        }
         public static int LoadInt(string key)
         {
             return PlayerPrefs.GetInt(key);

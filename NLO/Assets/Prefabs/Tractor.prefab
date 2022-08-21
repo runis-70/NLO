@@ -119,6 +119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1.5
+  speedFixed: 1.5
   MaxSpeed: 5.5
   accelaration: 0.006
 --- !u!61 &-3245580158920711735

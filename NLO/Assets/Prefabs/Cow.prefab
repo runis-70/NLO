@@ -120,6 +120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 2
+  speedFixed: 2
   MaxSpeed: 6
   accelaration: 0.006
 --- !u!95 &119525127873384934

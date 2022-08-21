@@ -6,117 +6,89 @@ public class GenerateController : MonoBehaviour
 {
     [Header("Рандом")]
     [SerializeField] private List<MoveObjects> moveObjects;
+    [Header("Бонусы")]
+    [SerializeField] private MoveObjects healthObject;
+    private float speedHealthObject;
     [Header("Задержка рандома")]
     [Range(0f, 20f)]
     [SerializeField] private float minFrame;
     [Range(0f, 20f)]
     [SerializeField] private float maxFrame;
-    [HideInInspector] [SerializeField] private List<float> speedObjects;
-    [SerializeField] private List<int> countObjects;
-    [SerializeField] private List<int> numberObjects;
-    [SerializeField] private DeathZone deathZone;
+     [SerializeField] private List<float> speedObjects;
+    [HideInInspector] [SerializeField] private List<float> accelerationObjects;
+    [HideInInspector] [SerializeField] private List<float> maxSpeedObjects;
+    private int lastRandomNumber = -1;
 
-    [SerializeField] private int MaxCountBarn;
-    [SerializeField] private int MaxCountMine;
-    [SerializeField] private int MaxCountTractor;
-    [SerializeField] private int MaxCountCow;
-    [SerializeField] private int MaxCountHealth;
-    public int countBarn = 0;
-    public int countMine = 0;
-    public int countTractor = 0;
-    public int countCow = 0;
-    public int countHealth = 0;
 
-    private void Start()
-    {       
+    private void Awake()
+    {
         // Иницилизация
         for (int i = 0; i < moveObjects.Count; i++)
         {
             speedObjects.Add(moveObjects[i].GetSpeed());
-            countObjects.Add(0);
+            accelerationObjects.Add(moveObjects[i].GetAccelaration());
+            maxSpeedObjects.Add(moveObjects[i].GetMaxSpeed());
         }
+    }
+    private void OnDisable()
+    {
+        Controller.MaxHp -= StartInstantiateHealthObjectIE;
+    }
+    private void Start()
+    {
+        Controller.MaxHp += StartInstantiateHealthObjectIE;
         // генерация случайного числа
         int random = Random.Range(0, moveObjects.Count);
         // Настройка обьекта
         MoveObjects moveObject = moveObjects[random];
         float speedObject = speedObjects[random];
-        moveObject.SetSpeed(speedObject);
-        countObjects[random]++;
-        numberObjects.Add(random);
+        lastRandomNumber = random;
         // Запуск функций
-        CheckRandomGameObject(moveObject);
-        StartCoroutine(enumerator());
+        InstantiateObject(moveObject, speedObject);
+        // Запуск корутин
+        StartCoroutine(InstantiateRandomObjectIE());
     }
     private void FixedUpdate()
     {
         // Добавление скорости обьектам
         for (int i = 0; i < moveObjects.Count; i++)
         {
-           if (moveObjects[i].GetSpeed() < moveObjects[i].GetMaxSpeed())
-                speedObjects[i] += moveObjects[i].GetAccelaration() * Time.fixedDeltaTime;
+           if (speedHealthObject < healthObject.GetMaxSpeed())
+                speedHealthObject += healthObject.GetAccelaration() * Time.fixedDeltaTime;
+           if (speedObjects[i] < maxSpeedObjects[i])
+                speedObjects[i] += accelerationObjects[i] * Time.fixedDeltaTime;
         }
     }
-    public void GetRange(ref List<int> newCountObjects, ref List<int> newNumberObjects)
+    private IEnumerator InstantiateRandomObjectIE()
     {
-        // Получаем количество обьектов
-        newCountObjects = countObjects;
-        // Получаем номер последнего добавленого обьекта
-        newNumberObjects = numberObjects;
-    }
-    public IEnumerator enumerator()
-    {
-        // генерация случайного числа
         yield return new WaitForSeconds(Random.Range(minFrame, maxFrame));
         int random = Random.Range(0, moveObjects.Count);
-        // Настройка обьекта
-        float speedObject = speedObjects[random];
-        MoveObjects moveObject = moveObjects[random];
-        moveObject.SetSpeed(speedObject);
-        countObjects[random]++;
-        numberObjects.Add(random);
-        // Запуск функций
-        CheckRandomGameObject(moveObject);
-        StartCoroutine(enumerator());
+        if (lastRandomNumber != random)
+        {
+            float speedObject = speedObjects[random];
+            MoveObjects moveObject = moveObjects[random];
+            InstantiateObject(moveObject, speedObject);          
+        }
+        lastRandomNumber = random;
+        StartCoroutine(InstantiateRandomObjectIE());
     }
-    public void CheckRandomGameObject(MoveObjects moveObject)
+    private void StartInstantiateHealthObjectIE()
     {
-        if (moveObject.tag == "Barn")
+        StartCoroutine(InstantiateRandomObjectIE());
+    }
+    private IEnumerator InstantiateHealthObjectIE()
+    {
+        yield return new WaitForSeconds(Random.Range(minFrame, maxFrame));
+        float random = Random.Range(0f, 100f);
+        if (random == 0.333f)
         {
-            if (countBarn < MaxCountBarn)
-            {   
-                Instantiate(moveObject, transform.position, Quaternion.identity);
-            }
+            InstantiateObject(healthObject, speedHealthObject);
+            StopCoroutine(InstantiateHealthObjectIE());
         }
-        else if (moveObject.tag == "Tractor")
-        {
-            if (countTractor < MaxCountTractor)
-            {
-                Instantiate(moveObject, transform.position, Quaternion.identity);
-            }
-        }
-        else if (moveObject.tag == "Mine")
-        {
-            if (countMine < MaxCountMine)
-            {
-                Instantiate(moveObject, transform.position, Quaternion.identity);
-            }
-        }
-        else if (moveObject.tag == "Cow")
-        {
-            if (countCow < MaxCountCow)
-            {
-                Instantiate(moveObject, transform.position, Quaternion.identity);
-            }
-        }
-        else if (moveObject.tag == "Health")
-        {
-            if (countHealth < MaxCountHealth)
-            {
-                Instantiate(moveObject, transform.position, Quaternion.identity);
-            }
-        }
-        deathZone.GetRange(ref countObjects);
-        // Очищаем массив от всех обьектов
-        numberObjects.Clear();
+        StartCoroutine(InstantiateRandomObjectIE());
+    }
+    private void InstantiateObject(MoveObjects moveObject, float speedObject)
+    {
+       Instantiate(moveObject, transform.position, Quaternion.identity).SetSpeedFixed(speedObject);       
     }
 }

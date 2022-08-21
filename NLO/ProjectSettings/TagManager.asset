@@ -8,6 +8,7 @@ TagManager:
   - Tractor
   - Cow
   - Barn
+  - Health
   layers:
   - Default
   - TransparentFX

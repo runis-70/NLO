@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2705929261906555804}
   m_Layer: 0
   m_Name: Health
-  m_TagString: Untagged
+  m_TagString: Health
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e62f265a12e4f654cae3c3cd45b39fe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speedFixed: 2
   MaxSpeed: 6
   accelaration: 0.006
 --- !u!61 &7321759882730262447
