@@ -4,27 +4,21 @@ using UnityEngine;
 
 public class DeathZone : MonoBehaviour
 {
+    [HideInInspector] [SerializeField] private List<string> tagArray;
+    [SerializeField] private GenerateController generateController;
+    private void Start()
+    {
+        generateController.GetTagObjects(ref tagArray);
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Barn")
+        for (int i = 0; i < tagArray.Count; i++)
         {
-             Destroy(collision.gameObject);
-        }
-        if (collision.gameObject.tag == "Mine")
-        {
-            Destroy(collision.gameObject);
-        }
-        if (collision.gameObject.tag == "Tractor")
-        {
-            Destroy(collision.gameObject);
-        }
-        if (collision.gameObject.tag == "Cow")
-        {
-            Destroy(collision.gameObject);
-        }
-        if (collision.gameObject.tag == "Health")
-        {
-            Destroy(collision.gameObject);
+            if(collision.gameObject.tag == tagArray[i])
+            {
+                generateController.countEnemy--;
+                Destroy(collision.gameObject);
+            }
         }
     }
 }

@@ -13,19 +13,23 @@ public class CanvasMenu : MonoBehaviour
 
     private void Start()
     {
-        musicManager.OnPlayOneShot(0);
+        Input.backButtonLeavesApp = true;
     }
-
     // Функции для кнопок
     public void PlayButton()
     {
-        WayStarted.Invoke();
+        WayStarted?.Invoke();
     }
     public void ExitButton()
     {
         Application.Quit();
     }
     public void DisablePanel(Image panel)
+    {
+        panel.gameObject.SetActive(false);
+        player.SetActive(true);
+    }
+    public void EnablePanel(Image panel)
     {
         panel.gameObject.SetActive(true);
         player.SetActive(false);

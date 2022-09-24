@@ -6,21 +6,21 @@ using UnityEngine.SceneManagement;
 
 public class AnimationControllerMenu : MonoBehaviour
 {
-    [SerializeField] private string nameScene;
     private Animator animator;
+    public static Action SceneStarted;
 
     private void Start()
     {
         CanvasMenu.WayStarted += WayStart;
         animator = GetComponent<Animator>();
     }
-    private void OnDisable()
+    private void OnDestroy()
     {
         CanvasMenu.WayStarted -= WayStart;
     }
     public void StartScene()
     {
-       SceneManager.LoadScene(nameScene);
+       SceneStarted?.Invoke();
     }
     private void WayStart()
     {

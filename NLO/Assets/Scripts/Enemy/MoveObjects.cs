@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class MoveObjects : MonoBehaviour
 {
-    private  Rigidbody2D rigidbody;
-    
+    private Rigidbody2D rigidbody;
+
     private float speed;
+    [SerializeField] private int score;
     [SerializeField] private float speedFixed;
     [SerializeField] private float MaxSpeed;
     [SerializeField] private float accelaration;
@@ -37,6 +38,10 @@ public class MoveObjects : MonoBehaviour
     }
     public float GetAccelaration()
     {
-        return accelaration; 
+        return accelaration;
+    }
+    public int GetScore()
+    {
+        return score;
     }
 }

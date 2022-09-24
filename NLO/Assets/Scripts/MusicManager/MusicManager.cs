@@ -1,16 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
-using SaveManagerLibrary;
 
 public class MusicManager : MonoBehaviour
 {
     private AudioSource Audio;
+    public static MusicManager instance;
     [SerializeField] private AudioMixerGroup Mixer;
     [SerializeField] private string nameKey;
     [SerializeField] private Slider SoundSlider;
@@ -20,37 +17,42 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private float MinDB;
     [Range(0f, 20f)]
     [SerializeField] private float MaxDB;
-    private float currentSound;
+
     public void Start()
     {
         Audio = GetComponent<AudioSource>();
-        SoundSlider.value = PlayerPrefs.GetFloat(nameKey, 1f);
+        if(SoundSlider != null)
+          SoundSlider.value = PlayerPrefs.GetFloat(nameKey, 1f);
         Mixer.audioMixer.SetFloat(nameKey, Mathf.Lerp(MinDB, MaxDB, PlayerPrefs.GetFloat(nameKey)));
-        OnPlayOneShot(0);
     }
+    // Чтобы запускать музыку один раз
     public void OnPlayOneShot(int number)
     {
-       if(audioClip != null)
-         Audio.PlayOneShot(audioClip[number]);
+       if(audioClip.Length != 0)
+       {
+           Audio.PlayOneShot(audioClip[number]);
+       }
     }
+    // Чтобы узнавать ValueSlider
     public float InfoSlider()
     {
         return SoundSlider.value;
     }
+    // Для Slider чтобы изменять громкость
     public void AllSoundsChangeVolume(float volume)
     {
         volume = SoundSlider.value;
         Mixer.audioMixer.SetFloat(nameKey, Mathf.Lerp(MinDB, MaxDB, volume));//значения заменить:)
         PlayerPrefs.SetFloat(nameKey, volume);
     }
+    // Включения звука
     public void OnSound()
     {
-        SoundSlider.value = currentSound;
+        Audio.mute = true;
     }
+    // Выключение звука
     public void OffSound()
     {
-        currentSound = SoundSlider.value;
-        Mixer.audioMixer.SetFloat(nameKey, SoundSlider.minValue);
-        SoundSlider.value = SoundSlider.minValue;
+        Audio.mute = false;
     }
 }

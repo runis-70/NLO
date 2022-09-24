@@ -6,7 +6,7 @@ using UnityEngine;
 public class AnimationController : MonoBehaviour
 {
     private Animator animator;
-    [SerializeField] private CanvasUI canvas;
+    [SerializeField] private GameManager canvas;
     private Controller controller;
     [SerializeField] private GenerateController generate;
     private void Start()

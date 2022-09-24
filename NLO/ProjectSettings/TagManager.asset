@@ -9,6 +9,9 @@ TagManager:
   - Cow
   - Barn
   - Health
+  - Ray
+  - Sound
+  - TractorBack
   layers:
   - Default
   - TransparentFX

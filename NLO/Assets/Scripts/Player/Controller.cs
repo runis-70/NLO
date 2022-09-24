@@ -5,34 +5,47 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
-    [SerializeField] private GenerateController generate;
-    [SerializeField] private CanvasUI canvas;
+    [SerializeField] private GenerateController generateController;
+    [SerializeField] private MusicManager soundManager;
+    [SerializeField] private GameManager canvas;
     [SerializeField] private int maxHP;
     private Animator animator;
+    private int numberOfMurders;
     private int HP;
     private int scoreNew;
 
-    [Header("Настройка лучей")]
+    [Header("Настройка уничтожения обьектов")]
     public GameObject BlueRay;
     public GameObject RedRay;
     public GameObject GreenRay;
     [SerializeField] private float secondRay;
     [SerializeField] private float offsetRay1;
     [SerializeField] private float offsetRay2;
+    [HideInInspector] [SerializeField] private List<string> tagObjects;
+    [HideInInspector] [SerializeField] private List<int> scoreObjects;
 
     // События
     public static Action<int> Score;
     public static Action MaxHp;
+    public static Action FadeSceneStarted;
 
     private RaycastHit2D hit;
     private void Start()
     {
+        generateController.GetTagObjects(ref tagObjects);
+        generateController.GetScoreObjects(ref scoreObjects);
+        FadeSceneStarted?.Invoke();
         HP = maxHP;
         animator = GetComponent<Animator>();
     }
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionStay2D(Collision2D collision)
     {
-        Destroy(collision.gameObject);
+        StartCoroutine(DestroyObject(0.1f, collision.collider));
+    }
+    private IEnumerator DestroyObject(float second, Collider2D collider)
+    {
+        yield return new WaitForSeconds(second);
+        Destroy(collider.gameObject);
     }
 
     private void LateUpdate()
@@ -43,47 +56,43 @@ public class Controller : MonoBehaviour
             if (hit.collider != null)
             {
                 print(hit.collider.tag);
-                //Обработка лучом обьектов         
-                if (hit.collider.tag == "Mine")
+                //Обработка лучом обьектов  
+                for (int i = 0; i < tagObjects.Count; i++)
                 {
-                    Destroy(hit.collider.gameObject);
-                    AddScore(-600);
-                    RecountHp(-1);
-                    StartCoroutine(OnRedRayDown());
-                }
-                if (hit.collider.tag == "Barn")
-                {
-                    Destroy(hit.collider.gameObject);
-                    AddScore(800);
-                    StartCoroutine(OnBlueRayDown());
-                }
-                if (hit.collider.tag == "Cow")
-                {
-                    Destroy(hit.collider.gameObject);
-                    AddScore(700);
-                    StartCoroutine(OnBlueRayDown());
-                }
-                if (hit.collider.tag == "Tractor")
-                {
-                    Destroy(hit.collider.gameObject);
-                    AddScore(900);
-                    StartCoroutine(OnBlueRayDown());
-                }
-                if (hit.collider.tag == "Health")
-                {
-                    if(HP == maxHP)
-                        AddScore(1000);
-                    else
-                    {                       
-                        RecountHp(1);
-                        StartCoroutine(OnGreenRayDown());
+                    if (hit.collider.tag == tagObjects[i])
+                    {
+                        numberOfMurders++;
+                        generateController.countEnemy--;
+                        if (tagObjects[i] == "Mine")
+                        {
+                            AddScore(scoreObjects[i]);
+                            RecountHp(-1);
+                            StartCoroutine(OnRayDown(RedRay, 1));
+                            StartCoroutine(DestroyObject(0.1f, hit.collider));
+                        }
+                        else if (tagObjects[i] == "Health")
+                        {
+                            if (HP == maxHP)
+                                AddScore(scoreObjects[i]);
+                            else
+                            {
+                                RecountHp(1);
+                                StartCoroutine(OnRayDown(GreenRay, 0));
+                            }
+                            StartCoroutine(DestroyObject(0.1f, hit.collider));
+                        }
+                        else
+                        {
+                            AddScore(scoreObjects[i]);
+                            StartCoroutine(OnRayDown(BlueRay, 0));
+                            StartCoroutine(DestroyObject(0.1f, hit.collider));
+                        }
                     }
-                    Destroy(hit.collider.gameObject);
                 }
             }
             else
             {
-                StartCoroutine(OnBlueRayDown()); ;
+                StartCoroutine(OnRayDown(BlueRay, 0));
             }
         }
     }
@@ -104,7 +113,7 @@ public class Controller : MonoBehaviour
         }
         else if (HP != maxHP)
         {
-            MaxHp.Invoke();
+            MaxHp?.Invoke();
         }
         if (HP <= 0)
         {
@@ -112,31 +121,31 @@ public class Controller : MonoBehaviour
         }
 
     }
+    public void OnDeath()
+    {      
+        Destroy(BlueRay.gameObject);
+        Destroy(RedRay.gameObject);
+        Destroy(GreenRay.gameObject);
+        generateController.gameObject.SetActive(false);
+    }
     public void Death()
     {
+        soundManager.OnPlayOneShot(2);
+    }
+    public void DeathEnd()
+    {
         canvas.Lose();
-        BlueRay.SetActive(false);
-        RedRay.SetActive(false);
-        generate.gameObject.SetActive(false);
         gameObject.SetActive(false);
     }
-    private IEnumerator OnRedRayDown()
+    private IEnumerator OnRayDown(GameObject Ray, int idMusic)
     {
-        RedRay.SetActive(true);
-        yield return new WaitForSeconds(secondRay);
-        RedRay.SetActive(false);
-    }
-    private IEnumerator OnBlueRayDown()
-    {
-        BlueRay.SetActive(true);
-        yield return new WaitForSeconds(secondRay);
-        BlueRay.SetActive(false);
-    }
-    private IEnumerator OnGreenRayDown()
-    {
-        GreenRay.SetActive(true);
-        yield return new WaitForSeconds(secondRay);
-        GreenRay.SetActive(false);
+        if (Ray.tag == "Ray")
+        {
+            Ray.SetActive(true);
+            soundManager.OnPlayOneShot(idMusic);
+            yield return new WaitForSeconds(secondRay);
+            Ray.SetActive(false);
+        }
     }
     public int GetHP()
     {
@@ -145,6 +154,10 @@ public class Controller : MonoBehaviour
     public int GetMaxHP()
     {
         return maxHP;
+    }
+    public int GetNumberOfMurders()
+    {
+        return numberOfMurders;
     }
     private void AddScore(int score)
     {
