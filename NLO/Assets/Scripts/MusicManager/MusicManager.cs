@@ -13,7 +13,7 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private Slider SoundSlider;
     [Header("Настройки")]
     [SerializeField] private AudioClip[] audioClip;
-    [Range(0f, -80f)]
+    [Range(0f, -75f)]
     [SerializeField] private float MinDB;
     [Range(0f, 20f)]
     [SerializeField] private float MaxDB;
@@ -28,7 +28,7 @@ public class MusicManager : MonoBehaviour
     // Чтобы запускать музыку один раз
     public void OnPlayOneShot(int number)
     {
-       if(audioClip.Length != 0)
+       if(audioClip.Length != 0 & number <= audioClip.Length - 1)
        {
            Audio.PlayOneShot(audioClip[number]);
        }

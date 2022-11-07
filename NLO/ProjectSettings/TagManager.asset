@@ -12,6 +12,8 @@ TagManager:
   - Ray
   - Sound
   - TractorBack
+  - Bullet
+  - Airplane
   layers:
   - Default
   - TransparentFX

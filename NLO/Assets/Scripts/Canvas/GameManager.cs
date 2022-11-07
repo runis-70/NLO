@@ -10,9 +10,10 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Image[] healthArray;
     [SerializeField] private GameObject LosePanel;
-    [SerializeField] private Controller controller;
+    [SerializeField] private PlayerController playerController;
+    [SerializeField] private InstantiateMobsManager instantiateMobsManager;
+    [SerializeField] private InstantiateBossManager instantiateBossManager;
     [SerializeField] private FadeScene fadeScene;
-    [SerializeField] private string nameKey;
     
 
     [Header("Рекорды")]
@@ -21,63 +22,62 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text BestScoreText;
     [SerializeField] private Image pausePanel;
     [SerializeField] private Image settingsPanel;
-    [SerializeField] private DontDestroy dontDestroy;
+    [SerializeField] private string nameKey;
     [Header("Настройка системы подсчета убийств")]
     [SerializeField] private Slider CountMurderSlider;
     [SerializeField] private Text CountMurderText;
     [SerializeField] private Image FillCountMurderSlider;
+    [Header("Настройка системы боссов")]
+    [SerializeField] private Slider BossHealthSlider;
+    [SerializeField] private BossText BossText;
 
-    private int Score;
+    private int score;
     private int BestScore;
     private int maxHP;
-    private int maxCountMurder = 150;
+    private int maxCountMurders;
+    private int countMurders;
+    private bool isBossCall = false;
 
-    public static Action BossCalled;
-
-    private void Start()
+    private void Awake()
     {
         Input.backButtonLeavesApp = false;
-        fadeScene.CloseSceneAnim();
+        maxCountMurders = playerController.GetMaxCountMurders();
+        CountMurderSlider.maxValue = maxCountMurders;
+        PlayerController.CountMurders += UpdateMurdersInfo;
+    }
+    private void Start()
+    {
         BestScore = SaveManager.LoadInt(nameKey);
-        Controller.Score += UpdateScoreText;
-        maxHP = controller.GetMaxHP();
-        CountMurderSlider.maxValue = maxCountMurder;
+        PlayerController.Score += UpdateScoreText;
+
+        maxHP = playerController.GetMaxHP();
         FillCountMurderSlider.gameObject.SetActive(false);
-        UpdateCountMurderText();
+        fadeScene.CloseSceneAnim();
     }
     private void Update()
     {
-        CountMurderSlider.value = controller.GetNumberOfMurders();
+        UpdateHealthImage();
+        TextOfBossCall();
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            controller.enabled = false;
+            playerController.enabled = false;
             pausePanel.gameObject.SetActive(true);
             Time.timeScale = 0f;
-        }
-        for (int i = 0; i < healthArray.Length; i++)
-        {
-            if (i < controller.GetHP())
-            {
-                healthArray[i].enabled = true;
-            }
-            else
-            {
-                healthArray[i].enabled = false;
-            }
-        }
-        if (controller.GetNumberOfMurders() > 0)
+        }       
+        if (countMurders > 0)
             FillCountMurderSlider.gameObject.SetActive(true);
     }
     private void OnDisable()
     {
-        Controller.Score -= UpdateScoreText;
+        PlayerController.Score -= UpdateScoreText;
+        PlayerController.CountMurders -= UpdateMurdersInfo;
     }
     private void OnBestScore()
     {
-        if (Score > BestScore)
+        if (score > BestScore)
         {
-            SaveManager.Save(nameKey, Score);
-            BestScoreText.text = Score.ToString();
+            SaveManager.Save(nameKey, score);
+            BestScoreText.text = score.ToString();
         }
         else
             BestScoreText.text = SaveManager.LoadInt(nameKey).ToString();
@@ -86,18 +86,47 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-    public void UpdateScoreText(int score)
+    private void UpdateScoreText(int score)
     {
-        Score += score;
-        ScoreText.text = ScoreText.text.Remove(ScoreText.text.ToString().Length - Score.ToString().Length);
-        print(Score.ToString().Length);
-        ScoreText.text += Score.ToString();
+        this.score += score;
+        ScoreText.text = ScoreText.text.Remove(ScoreText.text.ToString().Length - this.score.ToString().Length);
+        print(this.score.ToString().Length);
+        ScoreText.text += this.score.ToString();
+    }  
+    private void UpdateMurdersInfo(int murders)
+    {
+        countMurders += murders;
+        CountMurderSlider.value = countMurders;
+        CountMurderText.text = countMurders + "/" + maxCountMurders;
     }
-    public void UpdateCountMurderText()
+    private void UpdateHealthImage()
     {
-        CountMurderText.text = controller.GetNumberOfMurders() + "/" + maxCountMurder;
-        if (controller.GetNumberOfMurders() == maxCountMurder)
-            BossCalled.Invoke();
+        for (int i = 0; i < healthArray.Length; i++)
+        {
+            if (i < playerController.GetHP())
+            {
+                healthArray[i].GetComponent<Animator>().SetInteger("Health", 1);
+            }
+            else
+            {
+                healthArray[i].GetComponent<Animator>().SetInteger("Health", 2);
+            }
+        }
+    }
+    private void TextOfBossCall() 
+    {
+        if (countMurders == maxCountMurders & isBossCall == false)
+        {
+            isBossCall = true;
+            BossHealthSlider.gameObject.SetActive(true);
+            CountMurderSlider.gameObject.SetActive(false);
+            BossText.SelectTextBossCall();
+            instantiateMobsManager.StopAllCoroutines();
+        }
+    }
+    public void BossNameCall()
+    {
+        BossText.SelectTextNameBoss(instantiateBossManager.GetNameBoss());
     }
     public void HomeButton()
     {
@@ -107,13 +136,13 @@ public class GameManager : MonoBehaviour
     }
     public void ContinueButton()
     {
-        controller.enabled = true;
+        playerController.enabled = true;
         pausePanel.gameObject.SetActive(false);
         Time.timeScale = 1f;
     }
     public void SettingsButton()
     {
-        controller.enabled = false;
+        playerController.enabled = false;
         settingsPanel.gameObject.SetActive(true);
     }
     public void CloseSettingsPanel()
@@ -124,6 +153,6 @@ public class GameManager : MonoBehaviour
     {
         LosePanel.SetActive(true);
         OnBestScore();  
-        CurrentScoreText.text = Score.ToString();
+        CurrentScoreText.text = score.ToString();
     }
 }
