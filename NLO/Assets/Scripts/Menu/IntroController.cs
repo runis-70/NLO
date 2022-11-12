@@ -17,6 +17,13 @@ public class IntroController : MonoBehaviour
         videoPlayer = GetComponent<VideoPlayer>();
         StartCoroutine(PlayVideo());
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            SceneManager.LoadScene(nameScene);
+        }
+    }
     private void OnDestroy()
     {
         videoPlayer.loopPointReached -= EndReached;

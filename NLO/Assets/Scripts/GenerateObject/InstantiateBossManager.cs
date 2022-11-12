@@ -30,17 +30,20 @@ public class InstantiateBossManager : GenerateController
     }
     private IEnumerator InstantiateRandomBossObjectIE()
     {
-        yield return new WaitForSeconds(3f);
-        gameManager.BossNameCall();
-        int random = Random.Range(0, bossObjects.Count);
-        if (lastRandomNumber != random & penultimateRandomNumber != random)
+        if (gameManager.GetCountMurders() == gameManager.GetMaxCountMurders())
         {
-            BossObject bossObject = bossObjects[random];
-            nameObject = bossObject.GetName();
-            InstantiateObject(bossObject);
+            yield return new WaitForSeconds(3f);
+            gameManager.BossNameCall();
+            int random = Random.Range(0, bossObjects.Count);
+            if (lastRandomNumber != random & penultimateRandomNumber != random)
+            {
+                BossObject bossObject = bossObjects[random];
+                nameObject = bossObject.GetName();
+                InstantiateObject(bossObject);
+            }
+            penultimateRandomNumber = lastRandomNumber;
+            lastRandomNumber = random;
         }
-        penultimateRandomNumber = lastRandomNumber;
-        lastRandomNumber = random;
     }
     private void StartInstantiateBossObjectIE()
     {

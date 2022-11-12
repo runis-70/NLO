@@ -11,10 +11,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameManager gameManager;
     [SerializeField] private int maxCountMurders;
     [SerializeField] private int maxHP;
+    [SerializeField] private GameObject boomEffect;
     private Animator animator;
+    private CircleCollider2D circleCollider;
     private int countMurders = 0;
     private int HP;
     private int score;
+   public bool isDeath;
 
     [Header("Настройка лучей")]
     public GameObject BlueRay;
@@ -35,13 +38,14 @@ public class PlayerController : MonoBehaviour
         instantiateMobsManager.GetTagObjects(ref tagObjects);
         instantiateMobsManager.GetScoreObjects(ref scoreObjects);
         HP = maxHP;
+        circleCollider = GetComponent<CircleCollider2D>();
         animator = GetComponent<Animator>();
         CountMurders.Invoke(countMurders); // Передача данных при старте
     }
 
     private void LateUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && isDeath == false)
         {
             RaycastHit2D hit = Physics2D.BoxCast(new Vector2(0, 2), new Vector2(1, 9), 0, new Vector2(0, -1));
             if (hit.collider != null)
@@ -82,14 +86,19 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    private void OnCollisionStay2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        StartCoroutine(DestroyObject(0.1f, collision.collider));
+        StartCoroutine(DestroyObject(collision.collider));
     }
     private IEnumerator DestroyObject(float second, Collider2D collider)
     {
         yield return new WaitForSeconds(second);
-        Destroy(collider.gameObject);
+        collider.GetComponent<EnemyObject>().Death();
+    }
+    private IEnumerator DestroyObject(Collider2D collider)
+    {
+        collider.GetComponent<EnemyObject>().Death();
+        yield return null;
     }
     //private void OnDrawGizmos()
     //{
@@ -105,29 +114,29 @@ public class PlayerController : MonoBehaviour
         if (HP == 0)
         {
             SetTrigerDeath();
-            DisableСomponents();
-            Deathed?.Invoke();
         }
     }
     private void SetTrigerDeath() 
     {
         animator.SetTrigger("Death");
+        Deathed?.Invoke();
     }
-    private void DisableСomponents()
+    private void DisableСomponents() // Отключает компоненты
     {
-        Destroy(BlueRay.gameObject);
-        Destroy(RedRay.gameObject);
-        Destroy(GreenRay.gameObject);
+        isDeath = true;
         instantiateMobsManager.StopAllCoroutines();
+        RedRay.SetActive(false);
+        GreenRay.SetActive(false);
+        BlueRay.SetActive(false);
     }
-    public void SoundOfDeath()
+    private void SoundOfDeath()
     {
         soundManager.OnPlayOneShot(2);
     }
-    public void AnimationDeathEnd()
+    private void AnimationDeathEnd()
     {
+        circleCollider.enabled = false;
         gameManager.Lose();
-        gameObject.SetActive(false);
     }
     private IEnumerator OnRayDown(GameObject Ray, int idMusic)
     {
@@ -138,6 +147,10 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(secondRay);
             Ray.SetActive(false);
         }
+    }
+    private void InstantiateEffect(GameObject effect)
+    {
+        Instantiate(effect, transform.position, transform.rotation);
     }
     public int GetHP()
     {

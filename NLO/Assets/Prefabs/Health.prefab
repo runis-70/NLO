@@ -104,6 +104,7 @@ MonoBehaviour:
   speed: 2
   MaxSpeed: 6
   accelaration: 0.008
+  boomEffect: {fileID: 1130713999668788489, guid: 88b3f31a91ecaaf40b82212325249dbf, type: 3}
 --- !u!61 &7321759882730262447
 BoxCollider2D:
   m_ObjectHideFlags: 0

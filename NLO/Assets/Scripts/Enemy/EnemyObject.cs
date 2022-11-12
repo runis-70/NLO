@@ -5,6 +5,8 @@ using UnityEngine;
 public class EnemyObject : BaseEnemyObject
 {
     private Rigidbody2D rigidbody;
+    private Animator animator;
+    private Collider2D collider2D;
 
     [SerializeField] private float speed;
     [SerializeField] private float MaxSpeed;
@@ -13,6 +15,8 @@ public class EnemyObject : BaseEnemyObject
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        collider2D = GetComponent<Collider2D>();
     }
     private void FixedUpdate()
     {
@@ -25,6 +29,7 @@ public class EnemyObject : BaseEnemyObject
     public void Death()
     {
         animator.SetBool("Death", true);
+        collider2D.enabled = false;
     }
     private void EventDeath()
     {

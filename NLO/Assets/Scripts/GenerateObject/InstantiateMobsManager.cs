@@ -21,7 +21,7 @@ public class InstantiateMobsManager : GenerateController
     [Range(0f, 20f)]
     [SerializeField] private float maxFrame;
 
-    [HideInInspector] public int countEnemy;
+   public int countEnemy;
     [SerializeField] private int maxCountEnemy;
     [HideInInspector] [SerializeField] private List<float> speedObjects;
     [HideInInspector] [SerializeField] private List<float> accelerationObjects;
@@ -48,7 +48,6 @@ public class InstantiateMobsManager : GenerateController
     private void Start()
     {
         PlayerController.MaxHp += StartInstantiateHealthObjectIE;
-        // генерация случайного числа
         StartCoroutine(InstantiateRandomObjectIE());
     }
     private void FixedUpdate()
@@ -66,20 +65,19 @@ public class InstantiateMobsManager : GenerateController
     }
     private IEnumerator InstantiateRandomObjectIE()
     {
-        if (countEnemy < maxCountEnemy)
+        if (countEnemy <= maxCountEnemy)
         {
+            yield return new WaitForSeconds(Random.Range(minFrame, maxFrame));
             int random = Random.Range(0, moveObjects.Count);
-            if (lastRandomNumber != random & penultimateRandomNumber != random)
+            if (lastRandomNumber != random && penultimateRandomNumber != random)
             {
-                countEnemy++;
-              
+                countEnemy++;      
                 float speedObject = speedObjects[random];
                 EnemyObject moveObject = moveObjects[random];
                 InstantiateObject(moveObject, speedObject);
             }
             penultimateRandomNumber = lastRandomNumber;
             lastRandomNumber = random;
-            yield return new WaitForSeconds(Random.Range(minFrame, maxFrame));
             StartCoroutine(InstantiateRandomObjectIE());
         }
     }
@@ -104,7 +102,6 @@ public class InstantiateMobsManager : GenerateController
             InstantiateObject(healthObject, speedHealthObject);
             StopCoroutine(InstantiateHealthObjectIE());
         }
-        StartCoroutine(InstantiateRandomObjectIE());
     }
     private void InstantiateObject(EnemyObject enemyObject, float speedObject)
     {

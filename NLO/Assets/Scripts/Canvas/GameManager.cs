@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private InstantiateMobsManager instantiateMobsManager;
     [SerializeField] private InstantiateBossManager instantiateBossManager;
     [SerializeField] private FadeScene fadeScene;
-    
+
 
     [Header("Рекорды")]
     [SerializeField] private Text ScoreText;
@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
             playerController.enabled = false;
             pausePanel.gameObject.SetActive(true);
             Time.timeScale = 0f;
-        }       
+        }
         if (countMurders > 0)
             FillCountMurderSlider.gameObject.SetActive(true);
     }
@@ -92,7 +92,7 @@ public class GameManager : MonoBehaviour
         ScoreText.text = ScoreText.text.Remove(ScoreText.text.ToString().Length - this.score.ToString().Length);
         print(this.score.ToString().Length);
         ScoreText.text += this.score.ToString();
-    }  
+    }
     private void UpdateMurdersInfo(int murders)
     {
         countMurders += murders;
@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    private void TextOfBossCall() 
+    private void TextOfBossCall()
     {
         if (countMurders == maxCountMurders & isBossCall == false)
         {
@@ -152,7 +152,15 @@ public class GameManager : MonoBehaviour
     public void Lose()
     {
         LosePanel.SetActive(true);
-        OnBestScore();  
+        OnBestScore();
         CurrentScoreText.text = score.ToString();
+    }
+    public int GetCountMurders()
+    {
+        return countMurders;
+    }
+    public int GetMaxCountMurders()
+    {
+        return maxCountMurders;
     }
 }

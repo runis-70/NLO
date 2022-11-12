@@ -64,6 +64,10 @@ PrefabInstance:
       value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 4849631420656630281, guid: 65eefd546a3d9b14dbe89b7cd8ab63a0, type: 3}
+      propertyPath: boomEffect
+      value: 
+      objectReference: {fileID: 1130713999668788489, guid: 88b3f31a91ecaaf40b82212325249dbf, type: 3}
+    - target: {fileID: 4849631420656630281, guid: 65eefd546a3d9b14dbe89b7cd8ab63a0, type: 3}
       propertyPath: speedFixed
       value: 2.5
       objectReference: {fileID: 0}

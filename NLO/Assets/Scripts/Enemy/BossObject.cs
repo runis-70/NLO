@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BossObject : BaseEnemyObject
 {
+    private Animator animator;
     [SerializeField] private protected string nameBoss = "Name";
 
     private void Start()

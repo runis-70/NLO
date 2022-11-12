@@ -122,8 +122,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score: 50
-  speed: 2
-  MaxSpeed: 6
+  speed: 1.8
+  MaxSpeed: 6.2
   accelaration: 0.008
 --- !u!61 &8282426828543755625
 BoxCollider2D:

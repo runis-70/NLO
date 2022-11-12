@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 571232958}
   - component: {fileID: 8741015804325801818}
   - component: {fileID: -700115014580553697}
+  - component: {fileID: 5910256238348644954}
   m_Layer: 0
   m_Name: Mine
   m_TagString: Mine
@@ -122,8 +123,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score: -50
-  speed: 2
-  MaxSpeed: 6
+  speed: 1.9
+  MaxSpeed: 6.1
   accelaration: 0.008
 --- !u!58 &8741015804325801818
 CircleCollider2D:
@@ -151,7 +152,7 @@ Animator:
   m_GameObject: {fileID: 7958596628957360296}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 762e58a667c1f96409aa8ba695d276f3, type: 2}
+  m_Controller: {fileID: 9100000, guid: 444b09f1077bbcd40bd3e24653b15864, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -161,3 +162,15 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &5910256238348644954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7958596628957360296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d76f8a5372f4ff4db1da63a07880342, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
