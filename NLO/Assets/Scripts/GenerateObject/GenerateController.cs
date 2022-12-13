@@ -8,6 +8,7 @@ public class GenerateController : MonoBehaviour
     [HideInInspector][SerializeField] private protected List<int> scoreObjects;
     private protected int lastRandomNumber = -1;
     private protected int penultimateRandomNumber = -1;
+    private protected int penultimatePenultimateRandomNumber = -1;
 
     public void GetTagObjects(ref List<string> newTagObjects) // Передача массива тегов
     {

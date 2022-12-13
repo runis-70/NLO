@@ -11,13 +11,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameManager gameManager;
     [SerializeField] private int maxCountMurders;
     [SerializeField] private int maxHP;
-    [SerializeField] private GameObject boomEffect;
-    private Animator animator;
-    private CircleCollider2D circleCollider;
-    private int countMurders = 0;
-    private int HP;
-    private int score;
-   public bool isDeath;
+
+    [Header("Настроки передвижения игрока по оси Y")]
+    [SerializeField] private VariableJoystick joystick;
+    [SerializeField] private Rigidbody2D rigibodyParentPlayer;
+    [SerializeField] private Transform transformParentPlayer;
+    [SerializeField] private Transform minPointY;
+    [SerializeField] private Transform maxPointY;
+    [SerializeField] private Transform minPointX;
+    [SerializeField] private Transform maxPointX;
+    [SerializeField] private float speedY;
+    [SerializeField] private float speedX;
+    private Vector2 moveInput;
+    private bool isMotion = false;
 
     [Header("Настройка лучей")]
     public GameObject BlueRay;
@@ -26,6 +32,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float secondRay;
     [HideInInspector][SerializeField] private List<string> tagObjects;
     [HideInInspector][SerializeField] private List<int> scoreObjects;
+
+    // Приватные переменные
+    private Animator animator;
+    private CircleCollider2D circleCollider;
+    private int countMurders = 0;
+    private int HP;
+    private int score;
+    private bool isDeath;
 
     // События игрока
     public static Action<int> Score;
@@ -42,12 +56,66 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         CountMurders.Invoke(countMurders); // Передача данных при старте
     }
-
-    private void LateUpdate()
+    private void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && isDeath == false)
+        moveInput = new Vector2(joystick.Horizontal, joystick.Vertical);
+        rigibodyParentPlayer.velocity = new Vector2(moveInput.x * speedX, moveInput.y * speedY);
+
+
+        if (moveInput.x == 0 && moveInput.y == 0 )
+            isMotion = false;
+        else
+            isMotion = true;
+
+        animator.SetBool("isMotion", isMotion);
+
+
+        transformParentPlayer.position = new Vector3
+          (
+           Mathf.Clamp(transformParentPlayer.position.x, minPointX.position.x, maxPointX.position.x),
+           Mathf.Clamp(transformParentPlayer.position.y, minPointY.position.y, maxPointY.position.y),
+           transformParentPlayer.position.z
+          );
+    }
+    public void EnabledAnimator(bool enable)
+    {
+        animator.enabled = enable;
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        StartCoroutine(DestroyObject(collision.collider));
+    }
+    private IEnumerator DestroyObject(float second, Collider2D collider)
+    {
+        yield return new WaitForSeconds(second);
+        collider.GetComponent<EnemyObject>().Death();
+    }
+    private IEnumerator DestroyObject(Collider2D collider)
+    {
+        collider.GetComponent<EnemyObject>().Death();
+        yield return null;
+    }
+    public void RecountHp(int deltahp)// Рассчет здоровье
+    {
+        HP += deltahp;
+        Mathf.Clamp(HP, 0, maxHP);
+        if (HP != maxHP)
+            MaxHp?.Invoke();
+        if (HP == 0)
         {
-            RaycastHit2D hit = Physics2D.BoxCast(new Vector2(0, 2), new Vector2(1, 9), 0, new Vector2(0, -1));
+            SetTrigerDeath();
+        }
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawCube(transform.position + new Vector3(0, -3.1f, 0), new Vector2(1, 4.5f));
+    }
+    public void KillEnemies()
+    {      
+        if (isDeath == false)
+        {
+            RaycastHit2D hit = Physics2D.BoxCast(transform.position + new Vector3(0, -3.1f, 0), new Vector2(1, 4.5f), 0, new Vector2(0, -1));
             if (hit.collider != null)
             {
                 print(hit.collider.tag);
@@ -84,36 +152,6 @@ public class PlayerController : MonoBehaviour
             {
                 StartCoroutine(OnRayDown(BlueRay, 0));
             }
-        }
-    }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        StartCoroutine(DestroyObject(collision.collider));
-    }
-    private IEnumerator DestroyObject(float second, Collider2D collider)
-    {
-        yield return new WaitForSeconds(second);
-        collider.GetComponent<EnemyObject>().Death();
-    }
-    private IEnumerator DestroyObject(Collider2D collider)
-    {
-        collider.GetComponent<EnemyObject>().Death();
-        yield return null;
-    }
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawCube(transform.position, new Vector3(1,9.0f,0));
-    //}
-    public void RecountHp(int deltahp)// Рассчет здоровье
-    {
-        HP += deltahp;
-        Mathf.Clamp(HP, 0, maxHP);
-        if (HP != maxHP)
-            MaxHp?.Invoke();
-        if (HP == 0)
-        {
-            SetTrigerDeath();
         }
     }
     private void SetTrigerDeath() 

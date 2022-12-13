@@ -9,7 +9,14 @@ public class InstantiateBossManager : GenerateController
     [SerializeField] private List<BossObject> bossObjects;
     [SerializeField] private InstantiateMobsManager instantiateMobsManager;
     [SerializeField] private GameManager gameManager;
+    [SerializeField] private Transform playerTransform;
+    public BossObject currentBoss;
+    private bool bossExists = false;
     private string nameObject;
+
+    public event Action <bool> BossDeathed;
+    public event Action<bool> BossCreated;
+
 
     private void Awake()
     {
@@ -18,6 +25,13 @@ public class InstantiateBossManager : GenerateController
         {
             scoreObjects.Add(bossObjects[i].GetScore());
             tagObjects.Add(bossObjects[i].gameObject.tag);
+        }
+    }
+    private void Update()
+    {
+        if (currentBoss != null && currentBoss.GetIsDeath() == true)
+        {
+            BossDeath();
         }
     }
     private void OnDisable()
@@ -30,16 +44,20 @@ public class InstantiateBossManager : GenerateController
     }
     private IEnumerator InstantiateRandomBossObjectIE()
     {
-        if (gameManager.GetCountMurders() == gameManager.GetMaxCountMurders())
+        if (gameManager.GetCountMurders() == gameManager.GetMaxCountMurders() && bossExists == false)
         {
             yield return new WaitForSeconds(3f);
-            gameManager.BossNameCall();
+            gameManager.GetNameBoss();
             int random = Random.Range(0, bossObjects.Count);
             if (lastRandomNumber != random & penultimateRandomNumber != random)
             {
                 BossObject bossObject = bossObjects[random];
+                bossObject.playerTransform = playerTransform;
                 nameObject = bossObject.GetName();
                 InstantiateObject(bossObject);
+                BossCreated?.Invoke(bossExists);
+                currentBoss = FindObjectOfType<BossObject>();
+                gameManager.MaxValueBossHealthSlider(currentBoss.GetMaxHealth());
             }
             penultimateRandomNumber = lastRandomNumber;
             lastRandomNumber = random;
@@ -52,9 +70,33 @@ public class InstantiateBossManager : GenerateController
     private void InstantiateObject(BossObject bossObject)
     {
         Instantiate(bossObject, transform.position, bossObject.transform.rotation);
+        bossExists = true;
+    }
+    private void BossDeath()
+    {
+        BossDeathed?.Invoke(false);
+        bossExists = false;
     }
     public string GetNameBoss()
     {
         return nameObject;
+    }
+    public float GetBossHealth()
+    {
+        if (currentBoss != null)
+        {
+            return currentBoss.GetHealth();
+        }
+        else
+            return 100;
+    }
+    public float GetBossMaxHealth()
+    {
+        if (currentBoss != null)
+        {
+            return currentBoss.GetMaxHealth();
+        }
+        else
+            return 100;
     }
 }

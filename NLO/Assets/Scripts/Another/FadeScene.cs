@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class FadeScene : MonoBehaviour
 {
     [SerializeField] private string nameScene;
-    [SerializeField] private DontDestroy dontDestroy;
     private Animator animator;
     private Image image;
     private void Awake()
@@ -38,11 +37,6 @@ public class FadeScene : MonoBehaviour
     public void Disable()
     {
         image.enabled = false;
-    }
-    public void OnDestroy()
-    {
-        if(dontDestroy != null)
-         Destroy(dontDestroy.gameObject);
     }
     public void StartScene()
     {

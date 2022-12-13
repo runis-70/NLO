@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ public class Airplane : BossObject
 {
     [SerializeField] private Transform firePoint;
     [SerializeField] private GameObject bullet;
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.W))
@@ -27,3 +29,4 @@ public class Airplane : BossObject
         yield return new WaitForSeconds(1f);
     }
 }
+

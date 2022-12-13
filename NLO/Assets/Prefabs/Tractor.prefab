@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 1de499fe2848a4a498494e29a79f31dd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -125,7 +125,6 @@ MonoBehaviour:
   speed: 1.5
   MaxSpeed: 5.5
   accelaration: 0.008
-  boomEffect: {fileID: 1130713999668788489, guid: 88b3f31a91ecaaf40b82212325249dbf, type: 3}
 --- !u!61 &-3245580158920711735
 BoxCollider2D:
   m_ObjectHideFlags: 0

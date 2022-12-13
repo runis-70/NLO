@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 1020237457497068425}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7339, y: 0.7339, z: 0}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -122,10 +122,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score: 20
-  speed: 2
+  speed: 2.2
   MaxSpeed: 6
   accelaration: 0.008
-  boomEffect: {fileID: 1130713999668788489, guid: 88b3f31a91ecaaf40b82212325249dbf, type: 3}
 --- !u!95 &119525127873384934
 Animator:
   serializedVersion: 4

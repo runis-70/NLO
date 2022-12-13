@@ -65,21 +65,20 @@ public class InstantiateMobsManager : GenerateController
     }
     private IEnumerator InstantiateRandomObjectIE()
     {
-        if (countEnemy <= maxCountEnemy)
+
+        yield return new WaitForSeconds(Random.Range(minFrame, maxFrame));
+        int random = Random.Range(0, moveObjects.Count);
+        if (countEnemy < maxCountEnemy && lastRandomNumber != random && penultimateRandomNumber != random && penultimatePenultimateRandomNumber != random)
         {
-            yield return new WaitForSeconds(Random.Range(minFrame, maxFrame));
-            int random = Random.Range(0, moveObjects.Count);
-            if (lastRandomNumber != random && penultimateRandomNumber != random)
-            {
-                countEnemy++;      
-                float speedObject = speedObjects[random];
-                EnemyObject moveObject = moveObjects[random];
-                InstantiateObject(moveObject, speedObject);
-            }
+            countEnemy++;
+            float speedObject = speedObjects[random];
+            EnemyObject moveObject = moveObjects[random];
+            InstantiateObject(moveObject, speedObject);
+            penultimatePenultimateRandomNumber = penultimateRandomNumber;
             penultimateRandomNumber = lastRandomNumber;
             lastRandomNumber = random;
-            StartCoroutine(InstantiateRandomObjectIE());
         }
+        StartCoroutine(InstantiateRandomObjectIE());
     }
     private void StartInstantiateHealthObjectIE()
     {

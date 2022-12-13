@@ -36,14 +36,15 @@ public class GameManager : MonoBehaviour
     private int maxHP;
     private int maxCountMurders;
     private int countMurders;
-    private bool isBossCall = false;
+    public bool bossExists = false;
 
     private void Awake()
     {
         Input.backButtonLeavesApp = false;
         maxCountMurders = playerController.GetMaxCountMurders();
         CountMurderSlider.maxValue = maxCountMurders;
-        PlayerController.CountMurders += UpdateMurdersInfo;
+        PlayerController.CountMurders +=  UpdateMurdersInfo;
+
     }
     private void Start()
     {
@@ -53,16 +54,28 @@ public class GameManager : MonoBehaviour
         maxHP = playerController.GetMaxHP();
         FillCountMurderSlider.gameObject.SetActive(false);
         fadeScene.CloseSceneAnim();
+        instantiateBossManager.BossDeathed += BossDeath;
+        instantiateBossManager.BossCreated += BossCreated;
+        BossHealthSlider.maxValue = 100;
+        BossHealthSlider.value = 100;
     }
     private void Update()
     {
         UpdateHealthImage();
         TextOfBossCall();
+
+        if (bossExists == true)
+        {
+            UpdateBossHealthInfo();
+        }
+        else
+        {
+            BossHealthSlider.maxValue = 100;
+            BossHealthSlider.value = 100;
+        }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            playerController.enabled = false;
-            pausePanel.gameObject.SetActive(true);
-            Time.timeScale = 0f;
+            EnablePauseMenu();
         }
         if (countMurders > 0)
             FillCountMurderSlider.gameObject.SetActive(true);
@@ -71,6 +84,8 @@ public class GameManager : MonoBehaviour
     {
         PlayerController.Score -= UpdateScoreText;
         PlayerController.CountMurders -= UpdateMurdersInfo;
+        instantiateBossManager.BossDeathed -= BossDeath;
+        instantiateBossManager.BossCreated -= BossCreated;
     }
     private void OnBestScore()
     {
@@ -99,6 +114,14 @@ public class GameManager : MonoBehaviour
         CountMurderSlider.value = countMurders;
         CountMurderText.text = countMurders + "/" + maxCountMurders;
     }
+    public void MaxValueBossHealthSlider(float maxHealth)
+    {
+        BossHealthSlider.maxValue = maxHealth;
+    }
+    private void UpdateBossHealthInfo()
+    {
+        BossHealthSlider.value = instantiateBossManager.GetBossHealth();
+    }
     private void UpdateHealthImage()
     {
         for (int i = 0; i < healthArray.Length; i++)
@@ -113,20 +136,38 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    public void EnablePauseMenu()
+    {
+        playerController.enabled = false;
+        pausePanel.gameObject.SetActive(true);
+        Time.timeScale = 0f;
+    }
     private void TextOfBossCall()
     {
-        if (countMurders == maxCountMurders & isBossCall == false)
+        if (countMurders == maxCountMurders)
         {
-            isBossCall = true;
             BossHealthSlider.gameObject.SetActive(true);
             CountMurderSlider.gameObject.SetActive(false);
-            BossText.SelectTextBossCall();
             instantiateMobsManager.StopAllCoroutines();
         }
     }
-    public void BossNameCall()
+    public void GetNameBoss()
     {
-        BossText.SelectTextNameBoss(instantiateBossManager.GetNameBoss());
+        BossText.SetTextNameBoss(instantiateBossManager.GetNameBoss());
+    }
+    private void BossDeath(bool death)
+    {
+        print("Босс умер");
+        StartCoroutine(WaitDeath(4f, death));
+    }
+    private IEnumerator WaitDeath(float second, bool death)
+    {
+        yield return new WaitForSeconds(second);
+        bossExists = death;
+    }
+    private void BossCreated(bool created)
+    {
+        bossExists = created;
     }
     public void HomeButton()
     {

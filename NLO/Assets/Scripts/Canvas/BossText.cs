@@ -6,20 +6,15 @@ using UnityEngine.UI;
 public class BossText : MonoBehaviour
 {
     private Animator animator;
-    [SerializeField] private string bossCallText;
-    [SerializeField] private Text bossText;
+    [SerializeField] private Text bossNameText;
 
     private void Start()
     {
         animator = GetComponent<Animator>();
     }
-    public void SelectTextBossCall()
-    {
-        bossText.text = bossCallText;
-    }
-    public void SelectTextNameBoss(string nameBossText)
+    public void SetTextNameBoss(string nameBoss)
     {
         animator.SetBool("Anim", true);
-        bossText.text = nameBossText;
+        bossNameText.text = nameBoss;
     }
 }
