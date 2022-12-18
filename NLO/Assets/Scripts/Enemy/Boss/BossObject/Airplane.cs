@@ -2,23 +2,33 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
-public class Airplane : BossObject
+public class Airplane : MonoBehaviour
 {
     [SerializeField] private Transform firePoint;
-    [SerializeField] private GameObject bullet;
+    [SerializeField] private Bullet bullet;
+    private BossObject bossObject;
 
+    private void Start()
+    {
+        bossObject = GetComponent<BossObject>();
+        StartCoroutine(OneShotIE());
+    }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            StartCoroutine(OneShotIE());
-        }       
+        var dir = bossObject.GetPlayerTransform().position - firePoint.position;
+        var euler = firePoint.eulerAngles;
+        euler.z = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        firePoint.eulerAngles = euler;
     }
     private IEnumerator OneShotIE()
     {
-        Instantiate(bullet, firePoint.position, firePoint.rotation);
+        Bullet newBullet = bullet;
+        newBullet.target = bossObject.GetPlayerTransform().position;
+        Instantiate(newBullet, firePoint.position, bullet.transform.rotation);
         yield return new WaitForSeconds(1f);
+        StartCoroutine(OneShotIE());
     }
     private IEnumerator TwoShotIE()
     {

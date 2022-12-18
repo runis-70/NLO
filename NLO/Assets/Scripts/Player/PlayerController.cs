@@ -16,14 +16,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private VariableJoystick joystick;
     [SerializeField] private Rigidbody2D rigibodyParentPlayer;
     [SerializeField] private Transform transformParentPlayer;
-    [SerializeField] private Transform minPointY;
-    [SerializeField] private Transform maxPointY;
-    [SerializeField] private Transform minPointX;
-    [SerializeField] private Transform maxPointX;
     [SerializeField] private float speedY;
     [SerializeField] private float speedX;
     private Vector2 moveInput;
     private bool isMotion = false;
+    [Header("Точки ограничения")]
+    [SerializeField] private Transform maxPointY;
+    [SerializeField] private Transform minPointY;
+    [SerializeField] private Transform maxPointX;
+    [SerializeField] private Transform minPointX;
 
     [Header("Настройка лучей")]
     public GameObject BlueRay;
@@ -83,7 +84,7 @@ public class PlayerController : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        StartCoroutine(DestroyObject(collision.collider));
+       // StartCoroutine(DestroyObject(collision.collider));
     }
     private IEnumerator DestroyObject(float second, Collider2D collider)
     {

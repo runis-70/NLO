@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1557516092019899333}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.845, y: -0.47, z: 0}
+  m_LocalPosition: {x: -3.495, y: -0.47, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -42,9 +42,9 @@ GameObject:
   - component: {fileID: 6944071156884233520}
   - component: {fileID: 6944071156884233519}
   - component: {fileID: 6944071156884233518}
-  - component: {fileID: 6944071156884233517}
-  - component: {fileID: 6944071156884233516}
   - component: {fileID: 7741910366402900087}
+  - component: {fileID: 6888638936944255331}
+  - component: {fileID: -8823320706856235885}
   m_Layer: 0
   m_Name: Airplane
   m_TagString: Untagged
@@ -61,7 +61,7 @@ Transform:
   m_GameObject: {fileID: 6944071156884233514}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9824544, y: 0.9824544, z: 0.9824544}
+  m_LocalScale: {x: 0.9824544, y: 0.9824544, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2464153156615190859}
@@ -167,7 +167,21 @@ PolygonCollider2D:
       - {x: 0.64, y: -2.1}
       - {x: 0.82, y: -1.92}
       - {x: 1.92, y: -0.97999996}
---- !u!50 &6944071156884233517
+--- !u!114 &7741910366402900087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6944071156884233514}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17109d9b2773ca7498d60b306bf912ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firePoint: {fileID: 2464153156615190859}
+  bullet: {fileID: -5046290421844564018, guid: 151f818123d35d040a36d252e2d51a7e, type: 3}
+--- !u!50 &6888638936944255331
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -182,33 +196,13 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!95 &6944071156884233516
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6944071156884233514}
-  m_Enabled: 0
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8ecd0d6eb85535a4b904cbb4fdb86533, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &7741910366402900087
+--- !u!114 &-8823320706856235885
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -217,14 +211,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 6944071156884233514}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17109d9b2773ca7498d60b306bf912ca, type: 3}
+  m_Script: {fileID: 11500000, guid: 3a14ff45f81c0fa449e13e0a2352926e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   score: 1000
   nameBoss: "\u0421\u0430\u043C\u043E\u043B\u0435\u0442\u0442\u043E"
-  maxHealth: 200
-  takenHealth: 10
-  distanceToThePlayer: {x: 11, y: 0.5}
+  maxHealth: 100
+  takenHealth: 1
   playerTransform: {fileID: 0}
-  firePoint: {fileID: 0}
-  bullet: {fileID: 3996009633700578068, guid: 151f818123d35d040a36d252e2d51a7e, type: 3}
+  maxDistanceToThePlayer: {x: 10, y: 0.5}
+  maxPointY: {fileID: 6538609764999114817, guid: 316ba2ea77c77d540ae5ab42fa3c372e, type: 3}
+  minPointY: {fileID: 4801952483176326969, guid: 9f4ea86f015db0f4c99c5ab8266a34e9, type: 3}
+  maxPointX: {fileID: 3889055806647633566, guid: 560628063be0fb946b2a96b8e9ab170f, type: 3}
+  minPointX: {fileID: 454074048470882102, guid: 4157dcbc52a89354eb5b1cd9b7eac519, type: 3}
+  pointBossAnimationStart: {fileID: 6180458988037945148, guid: c6ced9e4e86983a4f88ca84bb4fb7f0d, type: 3}
+  deathPoint: {fileID: 9175445133397681746, guid: 5c63c6e5280097d419f30102659357f9, type: 3}
+  decreaseScale: 0.8

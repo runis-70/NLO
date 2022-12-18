@@ -2,58 +2,83 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UIElements;
 
 public class BossObject : BaseEnemyObject
 {
-    private Animator animator;
     private bool isNotMotion = false;
     private bool isDeath = false;
+    private bool isEndAnimation = false;
+    private bool isMinDistance = false;
+
     [SerializeField] private protected string nameBoss = "Name";
     [SerializeField] private float maxHealth;
     [SerializeField] private float takenHealth;
+    [HideInInspector] public Transform playerTransform;
     private protected float health;
-    [SerializeField] private Vector2 distanceToThePlayer;
+    [SerializeField] private Vector2 maxDistanceToThePlayer;
+    private float distanceToThePlayer;
+
+    [Header("Точки ограничения")]
+    [SerializeField] private Transform maxPointY;
+    [SerializeField] private Transform minPointY;
+    [SerializeField] private Transform maxPointX;
+    [SerializeField] private Transform minPointX;
+    [SerializeField] private Transform pointBossAnimationStart;   
+    [Header("Настроки анимации смерти")]
+    [SerializeField] private Transform deathPoint;
+    [SerializeField] private float decreaseScale;
+    private float distanceToDeathPoint;
+    private float rotationToDeathPoint;
 
 
     private Rigidbody2D rigidbody2D;
-
-    [HideInInspector] public Transform playerTransform;
+    private SpriteRenderer spriteRenderer;
 
 
     private void FixedUpdate()
     {
-        if (isDeath)
-        {
+        distanceToThePlayer = Vector2.Distance(playerTransform.position, transform.position);
+        if (distanceToThePlayer < maxDistanceToThePlayer.x)
+            isMinDistance = true;
+        else
+            isMinDistance = false;
 
-        }
-        if (isNotMotion == false)
+        if (isEndAnimation == true)
         {
-            Vector2 newPos =
+            transform.position = new Vector3
+         (
+            Mathf.Clamp(transform.position.x, minPointX.position.x, maxPointX.position.x),
+            Mathf.Clamp(transform.position.y, minPointY.position.y, maxPointY.position.y),
+            transform.position.z
+         );
+        }
+
+        if (isNotMotion == false && isEndAnimation == true)
+        {
+                Vector2 newPos =
            Vector2.MoveTowards(transform.position,
-           new Vector2(playerTransform.position.x + distanceToThePlayer.x, playerTransform.position.y + distanceToThePlayer.y),
+           new Vector2(playerTransform.position.x + maxDistanceToThePlayer.x, playerTransform.position.y + maxDistanceToThePlayer.y),
            4f * Time.fixedDeltaTime);
             rigidbody2D.MovePosition(newPos);
         }
     }
-
     private void Start()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         PlayerController.Deathed += DeathPlayer;
         health = maxHealth;
-        StartCoroutine(WaitPlayer(3));
+        StartCoroutine(AnimationStart(5f));
     }
     private void DeathPlayer()
     {
         isNotMotion = true;
-        animator.SetBool("BossIsBack", true);
     }
     private void Death()
     {
-        isDeath = true;
         isNotMotion = true;
-        animator.SetBool("Death", true);
+        StartCoroutine(AnimationDeath(2));
     }
     public void RecountHp(float deltahp)
     {
@@ -81,6 +106,52 @@ public class BossObject : BaseEnemyObject
         yield return new WaitForSeconds(second);
         StartCoroutine(TakeHealth(0.5f));
     }
+    private IEnumerator AnimationDeath(float speed)
+    {
+        distanceToDeathPoint = Vector2.Distance(transform.position, deathPoint.position);
+        rotationToDeathPoint = Vector2.SignedAngle(deathPoint.position, transform.forward);
+        for (float i = 0; i < 1; i += Time.deltaTime / distanceToDeathPoint * speed)
+        {
+            distanceToDeathPoint = Vector2.Distance(transform.position, deathPoint.position);
+            rotationToDeathPoint = Vector2.SignedAngle(deathPoint.position, transform.position);
+
+            rigidbody2D.MovePosition(Vector2.MoveTowards(transform.position,
+          new Vector2(deathPoint.position.x, deathPoint.position.y), 4f * Time.fixedDeltaTime));
+
+          transform.localScale = Vector2.MoveTowards
+          (transform.localScale, new Vector2(decreaseScale, decreaseScale), i);
+
+            transform.rotation = Quaternion.RotateTowards
+            (transform.rotation, Quaternion.Euler(transform.rotation.x, transform.rotation.y, rotationToDeathPoint), i) ;
+            yield return null;
+        }
+        for (float i = 0; i < 1; i += Time.deltaTime / distanceToDeathPoint * speed)
+        {
+            spriteRenderer.color =
+        Color.Lerp(spriteRenderer.color, new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0), i / 100);
+            yield return null;
+        }
+
+        transform.position = deathPoint.position;
+        transform.localScale = new Vector2(decreaseScale, decreaseScale);
+        transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, rotationToDeathPoint);
+        spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0);
+
+        isDeath = true;
+        Destroy(gameObject);
+    }
+    private IEnumerator AnimationStart(float speed)
+    {
+        for (float i = 0; i < 1; i += Time.deltaTime / speed)
+        {
+            rigidbody2D.MovePosition(Vector2.MoveTowards(transform.position,
+          pointBossAnimationStart.position, 4f * Time.fixedDeltaTime));
+            print(2356);
+            yield return null;
+        }
+        transform.position = pointBossAnimationStart.position;
+        isEndAnimation = true;
+    }
     public void OnDestroy()
     {
         StopAllCoroutines();
@@ -97,5 +168,9 @@ public class BossObject : BaseEnemyObject
     public bool GetIsDeath()
     {
         return isDeath;
+    }
+    public Transform GetPlayerTransform()
+    {
+        return playerTransform;
     }
 }
